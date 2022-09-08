@@ -3,6 +3,7 @@ package com.blogapp.backend.service.user;
 import java.util.List;
 
 import com.blogapp.backend.model.User;
+import com.blogapp.backend.payloads.PaginationApiResponse;
 import com.blogapp.backend.payloads.UserRequest;
 import com.blogapp.backend.payloads.UserResponse;
 
@@ -27,5 +28,7 @@ public interface UserServiceInterface {
 	public UserResponse convertUserToUserResponse(User user);
 
 	public UserResponse deleteByEmail(String email);
+
+	public PaginationApiResponse findAllByPage(int page, int size);
 
 }

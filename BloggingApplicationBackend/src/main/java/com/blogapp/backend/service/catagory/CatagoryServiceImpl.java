@@ -3,11 +3,15 @@ package com.blogapp.backend.service.catagory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.blogapp.backend.exception.MethodArgumentsNotFound;
@@ -15,6 +19,7 @@ import com.blogapp.backend.exception.ResourceAlreadyExists;
 import com.blogapp.backend.exception.ResourceNotFoundException;
 import com.blogapp.backend.model.Catagory;
 import com.blogapp.backend.payloads.CatagoryDto;
+import com.blogapp.backend.payloads.PaginationApiResponse;
 import com.blogapp.backend.repo.CatagoryRepository;
 
 @Service
@@ -160,6 +165,26 @@ public class CatagoryServiceImpl implements CatagoryServiceInterface {
             catagories.add(this.catagoryRepository.findByTitleIgnoreCase(title));
         }
         return catagories;
+    }
+
+    @Override
+    public PaginationApiResponse getAllCatagoryByPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Catagory> catagories = this.catagoryRepository.findAll(pageable);
+        if (!catagories.hasContent()) {
+            LOGGER.error("No catagories found");
+            throw new ResourceNotFoundException(CATAGORY, "page", page);
+        }
+        List<Object> catagoryList = catagories.getContent().stream()
+                .map(this::convertCatagoryToCatagaoryDto).collect(Collectors.toList());
+        PaginationApiResponse paginationApiResponse = new PaginationApiResponse();
+        paginationApiResponse.setTotalPages(catagories.getTotalPages());
+        paginationApiResponse.setTotalElements(catagories.getTotalElements());
+        paginationApiResponse.setPage(catagories.getNumber());
+        paginationApiResponse.setSize(catagories.getSize());
+        paginationApiResponse.setLastPage(catagories.isLast());
+        paginationApiResponse.setContent(catagoryList);
+        return paginationApiResponse;
     }
 
 }

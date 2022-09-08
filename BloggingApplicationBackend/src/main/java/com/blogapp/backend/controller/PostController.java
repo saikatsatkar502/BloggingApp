@@ -141,7 +141,7 @@ public class PostController {
             @PathVariable String catagoryTitle,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) Integer pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
-        LOGGER.info("Getting post by catagory");
+        LOGGER.info("Getting post by catagory and page");
         if (!catagoryTitle.isEmpty()) {
             return ResponseEntity.ok(postService.getPostsByCatagoryByPagination(catagoryTitle, pageNo, pageSize));
         }
@@ -153,7 +153,7 @@ public class PostController {
             @PathVariable String authorEmail,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) Integer pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
-        LOGGER.info("Getting post by catagory");
+        LOGGER.info("Getting post by author email and page");
         if (!authorEmail.isEmpty()) {
             return ResponseEntity.ok(postService.getPostsByAuthorEmailByPagination(authorEmail, pageNo, pageSize));
         }

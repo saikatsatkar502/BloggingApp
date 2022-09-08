@@ -8,12 +8,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.blogapp.backend.exception.MethodArgumentsNotFound;
 import com.blogapp.backend.exception.ResourceAlreadyExists;
 import com.blogapp.backend.exception.ResourceNotFoundException;
 import com.blogapp.backend.model.User;
+import com.blogapp.backend.payloads.PaginationApiResponse;
 import com.blogapp.backend.payloads.UserRequest;
 import com.blogapp.backend.payloads.UserResponse;
 import com.blogapp.backend.repo.UserRepository;
@@ -40,18 +44,11 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public List<UserResponse> findAll() {
-        // List<UserResponse> userResponseList = new
-        // ArrayList<>(Collections.emptyList());
         List<User> users = userRepo.findAll();
         if (!users.isEmpty()) {
             return users.stream().map(this::convertUserToUserResponse).collect(Collectors.toList());
 
         }
-        // for (User user : users) {
-        // UserResponse userResponse = this.convertUserToUserResponse(user);
-        // userResponseList.add(userResponse);
-        // }
-
         return Collections.emptyList();
     }
 
@@ -170,6 +167,26 @@ public class UserService implements UserServiceInterface {
         } else {
             throw new MethodArgumentsNotFound("Email", "deleteByEmail", email);
         }
+    }
+
+    @Override
+    public PaginationApiResponse findAllByPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userRepo.findAll(pageable);
+        if (!userPage.hasContent()) {
+            LOGGER.error("No content found");
+            throw new ResourceNotFoundException("No content found");
+        }
+        List<Object> userResponseList = userPage.stream().map(this::convertUserToUserResponse)
+                .collect(Collectors.toList());
+        PaginationApiResponse paginationApiResponse = new PaginationApiResponse();
+        paginationApiResponse.setTotalPages(userPage.getTotalPages());
+        paginationApiResponse.setTotalElements(userPage.getTotalElements());
+        paginationApiResponse.setPage(userPage.getNumber());
+        paginationApiResponse.setSize(userPage.getSize());
+        paginationApiResponse.setLastPage(userPage.isLast());
+        paginationApiResponse.setContent(userResponseList);
+        return paginationApiResponse;
     }
 
 }

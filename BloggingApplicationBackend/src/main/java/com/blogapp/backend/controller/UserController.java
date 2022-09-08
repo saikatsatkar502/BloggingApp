@@ -3,6 +3,7 @@ package com.blogapp.backend.controller;
 import com.blogapp.backend.exception.MethodArgumentsNotFound;
 import com.blogapp.backend.exception.ResourceNotFoundException;
 import com.blogapp.backend.model.User;
+import com.blogapp.backend.payloads.PaginationApiResponse;
 import com.blogapp.backend.payloads.UserRequest;
 import com.blogapp.backend.payloads.UserResponse;
 import com.blogapp.backend.service.user.UserService;
@@ -29,7 +30,6 @@ public class UserController {
             return ResponseEntity.ok(users);
         }
         throw new ResourceNotFoundException("User List is empty ");
-
 
     }
 
@@ -84,7 +84,7 @@ public class UserController {
             UserResponse userResponse = userService.update(user, id);
             return new ResponseEntity<>(userResponse, HttpStatus.OK);
         } else {
-            throw new MethodArgumentsNotFound("User ","update",user);
+            throw new MethodArgumentsNotFound("User ", "update", user);
         }
 
     }
@@ -95,21 +95,27 @@ public class UserController {
             UserResponse userResponse = userService.delete(id);
             return new ResponseEntity<>(userResponse, HttpStatus.OK);
         } else {
-            throw new MethodArgumentsNotFound("Id","delete user",id);
+            throw new MethodArgumentsNotFound("Id", "delete user", id);
         }
 
     }
-    
+
     @DeleteMapping("/delete-by-email/{email}")
     public ResponseEntity<UserResponse> deleteUser(@PathVariable String email) {
         if (email.isEmpty()) {
             UserResponse userResponse = userService.deleteByEmail(email);
             return new ResponseEntity<>(userResponse, HttpStatus.OK);
         } else {
-            throw new MethodArgumentsNotFound("Email","delete user",email);
+            throw new MethodArgumentsNotFound("Email", "delete user", email);
         }
 
     }
 
+    @GetMapping("/get-all-by-page")
+    public ResponseEntity<PaginationApiResponse> findAllByPage(
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "0") int pageNo) {
+        return ResponseEntity.ok(userService.findAllByPage(pageNo, pageSize));
+    }
 
 }

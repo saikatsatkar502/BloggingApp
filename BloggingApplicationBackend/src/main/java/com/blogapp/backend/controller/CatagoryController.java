@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blogapp.backend.exception.ResourceNotFoundException;
 import com.blogapp.backend.payloads.CatagoryDto;
+import com.blogapp.backend.payloads.PaginationApiResponse;
 import com.blogapp.backend.service.catagory.CatagoryServiceImpl;
 
 @RestController
@@ -68,6 +70,14 @@ public class CatagoryController {
     public ResponseEntity<CatagoryDto> deleteCatagory(@PathVariable int id) {
         LOGGER.info("Deleting catagory");
         return ResponseEntity.ok(this.catagoryService.deleteCatagoryById(id));
+    }
+
+    @GetMapping("/get-by-page")
+    public ResponseEntity<PaginationApiResponse> getAllCatagoryByPage(
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "pageNo", defaultValue = "0") int pageNo) {
+        LOGGER.info("Getting all catagory by page");
+        return ResponseEntity.ok(this.catagoryService.getAllCatagoryByPage(pageNo, pageSize));
     }
 
 }

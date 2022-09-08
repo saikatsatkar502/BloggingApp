@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.blogapp.backend.model.Catagory;
 import com.blogapp.backend.payloads.CatagoryDto;
+import com.blogapp.backend.payloads.PaginationApiResponse;
 
 public interface CatagoryServiceInterface {
 
@@ -24,4 +25,6 @@ public interface CatagoryServiceInterface {
     public CatagoryDto convertCatagoryToCatagaoryDto(Catagory catagory);
 
     public Catagory convertCatagoryDtoToCatagory(CatagoryDto catagoryDto);
+
+    public PaginationApiResponse getAllCatagoryByPage(int page, int size);
 }

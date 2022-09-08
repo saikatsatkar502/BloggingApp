@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blogapp.backend.exception.MethodArgumentsNotFound;
@@ -231,8 +232,9 @@ public class PostServiceImpl implements PostServiceInterface {
      * @return
      */
     @Override
-    public PaginationApiResponse getAllPostsByPagination(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public PaginationApiResponse getAllPostsByPagination(int page, int size, String sortBy, String direction) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
         Page<Post> postPage = this.postRepository.findAll(pageable);
         if (postPage.getContent().isEmpty()) {
             LOGGER.error(POST_NOT_FOUND);
@@ -243,8 +245,9 @@ public class PostServiceImpl implements PostServiceInterface {
     }
 
     @Override
-    public PaginationApiResponse getPostsByCatagoryByPagination(String catagoryTitle, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public PaginationApiResponse getPostsByCatagoryByPagination(String catagoryTitle, int page, int size, String sortBy,
+            String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
         Page<Post> postPage = this.postRepository.findAllByCatagoryTitleIgnoreCase(catagoryTitle, pageable);
         if (postPage.getContent().isEmpty()) {
             LOGGER.error(POST_NOT_FOUND);
@@ -254,8 +257,10 @@ public class PostServiceImpl implements PostServiceInterface {
     }
 
     @Override
-    public PaginationApiResponse getPostsByAuthorEmailByPagination(String authorEmail, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public PaginationApiResponse getPostsByAuthorEmailByPagination(String authorEmail, int page, int size,
+            String sortBy,
+            String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
         Page<Post> postPage = this.postRepository.findAllByAuthorEmailIgnoreCase(authorEmail, pageable);
         if (postPage.getContent().isEmpty()) {
             LOGGER.error(POST_NOT_FOUND);
@@ -283,6 +288,20 @@ public class PostServiceImpl implements PostServiceInterface {
         paginationApiResponse.setContent(postResponses);
 
         return paginationApiResponse;
+
+    }
+
+    @Override
+    public PaginationApiResponse searchPostByKeywordWithPagination(String keyword, int page, int size, String sort,
+            String direction) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sort);
+        Page<Post> postPage = this.postRepository.searchPostByKeyword(keyword, pageable);
+        if (!postPage.hasContent()) {
+            LOGGER.error(POST_NOT_FOUND + "with keyword :{}", keyword);
+            throw new ResourceNotFoundException(POSTS, "Search Keyword", keyword);
+        }
+        return this.convertPageToPageApiResponse(postPage);
 
     }
 

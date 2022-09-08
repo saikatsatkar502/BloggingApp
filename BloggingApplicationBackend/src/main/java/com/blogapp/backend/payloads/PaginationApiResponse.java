@@ -68,4 +68,5 @@ public class PaginationApiResponse {
     public void setLastPage(boolean lastPage) {
         this.lastPage = lastPage;
     }
+
 }

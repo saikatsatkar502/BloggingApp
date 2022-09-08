@@ -114,8 +114,10 @@ public class UserController {
     @GetMapping("/get-all-by-page")
     public ResponseEntity<PaginationApiResponse> findAllByPage(
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "0") int pageNo) {
-        return ResponseEntity.ok(userService.findAllByPage(pageNo, pageSize));
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "ASC", required = false) String sortDirection) {
+        return ResponseEntity.ok(userService.findAllByPage(pageNo, pageSize, sortBy, sortDirection));
     }
 
 }

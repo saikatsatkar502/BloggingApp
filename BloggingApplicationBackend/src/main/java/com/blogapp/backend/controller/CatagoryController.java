@@ -75,9 +75,11 @@ public class CatagoryController {
     @GetMapping("/get-by-page")
     public ResponseEntity<PaginationApiResponse> getAllCatagoryByPage(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-            @RequestParam(value = "pageNo", defaultValue = "0") int pageNo) {
+            @RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "ASC", required = false) String sortDirection) {
         LOGGER.info("Getting all catagory by page");
-        return ResponseEntity.ok(this.catagoryService.getAllCatagoryByPage(pageNo, pageSize));
+        return ResponseEntity.ok(this.catagoryService.getAllCatagoryByPage(pageNo, pageSize, sortBy, sortDirection));
     }
 
 }

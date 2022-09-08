@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blogapp.backend.exception.MethodArgumentsNotFound;
@@ -169,9 +170,25 @@ public class UserService implements UserServiceInterface {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.blogapp.backend.service.user.UserServiceInterface#findAllByPage(int,
+     * int, java.lang.String, java.lang.String)
+     */
+
     @Override
-    public PaginationApiResponse findAllByPage(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public PaginationApiResponse findAllByPage(int page, int size, String sortBy, String direction) {
+        Sort sort = null;
+        if (direction.equalsIgnoreCase("asc")) {
+            sort = Sort.by(sortBy).ascending();
+        } else if (direction.equalsIgnoreCase("desc")) {
+            sort = Sort.by(sortBy).descending();
+        } else {
+            throw new MethodArgumentsNotFound("Direction", "findAllByPage", direction);
+        }
+
+        final Pageable pageable = PageRequest.of(page, size, sort);
         Page<User> userPage = userRepo.findAll(pageable);
         if (!userPage.hasContent()) {
             LOGGER.error("No content found");

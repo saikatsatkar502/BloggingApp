@@ -26,5 +26,5 @@ public interface CatagoryServiceInterface {
 
     public Catagory convertCatagoryDtoToCatagory(CatagoryDto catagoryDto);
 
-    public PaginationApiResponse getAllCatagoryByPage(int page, int size);
+    public PaginationApiResponse getAllCatagoryByPage(int page, int size, String sortBy, String direction);
 }

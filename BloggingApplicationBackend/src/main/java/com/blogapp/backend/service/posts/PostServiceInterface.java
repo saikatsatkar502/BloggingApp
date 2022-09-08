@@ -30,12 +30,17 @@ public interface PostServiceInterface {
 
     public Post convertPostRequestToPost(PostRequest postRequest);
 
-    public PaginationApiResponse getAllPostsByPagination(int page, int size);
+    public PaginationApiResponse getAllPostsByPagination(int page, int size, String sort, String direction);
 
-    public PaginationApiResponse getPostsByCatagoryByPagination(String catagoryTitle, int page, int size);
+    public PaginationApiResponse getPostsByCatagoryByPagination(String catagoryTitle, int page, int size, String sort,
+            String direction);
 
-    public PaginationApiResponse getPostsByAuthorEmailByPagination(String authorEmail, int page, int size);
+    public PaginationApiResponse getPostsByAuthorEmailByPagination(String authorEmail, int page, int size, String sort,
+            String direction);
 
     public PaginationApiResponse convertPageToPageApiResponse(Page<Post> postPage);
+
+    public PaginationApiResponse searchPostByKeywordWithPagination(String keyword, int page, int size, String sort,
+            String direction);
 
 }

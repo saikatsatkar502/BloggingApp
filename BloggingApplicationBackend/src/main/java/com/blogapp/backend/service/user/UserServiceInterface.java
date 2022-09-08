@@ -29,6 +29,6 @@ public interface UserServiceInterface {
 
 	public UserResponse deleteByEmail(String email);
 
-	public PaginationApiResponse findAllByPage(int page, int size);
+	public PaginationApiResponse findAllByPage(int page, int size, String sort, String direction);
 
 }

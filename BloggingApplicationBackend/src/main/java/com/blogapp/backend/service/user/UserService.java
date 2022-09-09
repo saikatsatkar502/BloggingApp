@@ -92,6 +92,7 @@ public class UserService implements UserServiceInterface {
         if (id > 0) {
             User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("user", "id", id));
             LOGGER.info(USER_FOUND, user.getEmail());
+
             return user;
         } else {
             throw new MethodArgumentsNotFound("Id", "findById", id);
@@ -194,6 +195,32 @@ public class UserService implements UserServiceInterface {
             LOGGER.error("No content found");
             throw new ResourceNotFoundException("No content found");
         }
+
+        return this.convertUserPageToPageApiResponse(userPage);
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.blogapp.backend.service.user.UserServiceInterface#searchUser(java.lang.
+     * String, int, int, java.lang.String, java.lang.String)
+     */
+    @Override
+    public PaginationApiResponse searchUser(String keyword, int page, int size, String sort, String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
+        Page<User> userPage = this.userRepo.searchUser(keyword, pageable);
+        if (!userPage.hasContent()) {
+            throw new ResourceNotFoundException("User", "search keyword", keyword);
+        }
+
+        return this.convertUserPageToPageApiResponse(userPage);
+
+    }
+
+    @Override
+    public PaginationApiResponse convertUserPageToPageApiResponse(Page<User> userPage) {
         List<Object> userResponseList = userPage.stream().map(this::convertUserToUserResponse)
                 .collect(Collectors.toList());
         PaginationApiResponse paginationApiResponse = new PaginationApiResponse();

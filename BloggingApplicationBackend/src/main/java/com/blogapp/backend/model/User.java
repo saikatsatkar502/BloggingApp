@@ -4,6 +4,8 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class User {
 	@Id
@@ -20,6 +22,7 @@ public class User {
 	private String password;
 
 	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonBackReference
 	private Set<Post> posts;
 
 	public User(int id, String email, String name, String password) {

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blogapp.backend.config.AppConfiguration;
 import com.blogapp.backend.exception.ResourceNotFoundException;
 import com.blogapp.backend.payloads.CatagoryDto;
 import com.blogapp.backend.payloads.PaginationApiResponse;
@@ -74,10 +75,10 @@ public class CatagoryController {
 
     @GetMapping("/get-by-page")
     public ResponseEntity<PaginationApiResponse> getAllCatagoryByPage(
-            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-            @RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDirection", defaultValue = "ASC", required = false) String sortDirection) {
+            @RequestParam(value = "pageSize", defaultValue = AppConfiguration.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "pageNo", defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "sortBy", defaultValue = AppConfiguration.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = AppConfiguration.DEFAULT_SORT_DIRECTION, required = false) String sortDirection) {
         LOGGER.info("Getting all catagory by page");
         return ResponseEntity.ok(this.catagoryService.getAllCatagoryByPage(pageNo, pageSize, sortBy, sortDirection));
     }

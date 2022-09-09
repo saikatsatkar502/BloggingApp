@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blogapp.backend.config.AppConfiguration;
 import com.blogapp.backend.exception.MethodArgumentsNotFound;
 import com.blogapp.backend.exception.ResourceNotFoundException;
 import com.blogapp.backend.payloads.PaginationApiResponse;
@@ -127,10 +128,10 @@ public class PostController {
 
     @GetMapping("get-by-page")
     public ResponseEntity<PaginationApiResponse> getPostByPage(
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDirection", defaultValue = "ASC", required = false) String sortDirection) {
+            @RequestParam(value = "pageNo", defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConfiguration.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConfiguration.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = AppConfiguration.DEFAULT_SORT_DIRECTION, required = false) String sortDirection) {
         LOGGER.info("Getting post by page");
         if (pageNo != null && pageSize != null) {
             return ResponseEntity.ok(postService.getAllPostsByPagination(pageNo, pageSize, sortBy, sortDirection));
@@ -141,10 +142,10 @@ public class PostController {
     @GetMapping("/get-by-catagory/{catagoryTitle}/page")
     public ResponseEntity<PaginationApiResponse> getPostByCatagoryPagination(
             @PathVariable String catagoryTitle,
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDirection", defaultValue = "ASC", required = false) String sortDirection) {
+            @RequestParam(value = "pageNo", defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConfiguration.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConfiguration.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = AppConfiguration.DEFAULT_SORT_DIRECTION, required = false) String sortDirection) {
         LOGGER.info("Getting post by catagory and page");
         if (!catagoryTitle.isEmpty()) {
             return ResponseEntity.ok(
@@ -156,10 +157,10 @@ public class PostController {
     @GetMapping("/get-by-authorEmail/{authorEmail}/page")
     public ResponseEntity<PaginationApiResponse> getPostByAuthorEmailPagination(
             @PathVariable String authorEmail,
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDirection", defaultValue = "ASC", required = false) String sortDirection) {
+            @RequestParam(value = "pageNo", defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConfiguration.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConfiguration.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = AppConfiguration.DEFAULT_SORT_DIRECTION, required = false) String sortDirection) {
         LOGGER.info("Getting post by author email and page");
         if (!authorEmail.isEmpty()) {
             return ResponseEntity.ok(postService.getPostsByAuthorEmailByPagination(authorEmail, pageNo, pageSize,
@@ -171,10 +172,10 @@ public class PostController {
     @GetMapping("/search")
     public ResponseEntity<PaginationApiResponse> searchPosts(
             @RequestParam(value = "keyword", required = true) String keyword,
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDirection", defaultValue = "ASC", required = false) String sortDirection) {
+            @RequestParam(value = "pageNo", defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConfiguration.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConfiguration.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = AppConfiguration.DEFAULT_SORT_DIRECTION, required = false) String sortDirection) {
         if (keyword.isEmpty()) {
             LOGGER.error("Keyword Not Found");
             throw new MethodArgumentsNotFound("Keyword", "search posts", keyword);

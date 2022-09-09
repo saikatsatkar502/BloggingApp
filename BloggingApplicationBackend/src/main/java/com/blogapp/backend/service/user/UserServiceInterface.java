@@ -2,6 +2,8 @@ package com.blogapp.backend.service.user;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.blogapp.backend.model.User;
 import com.blogapp.backend.payloads.PaginationApiResponse;
 import com.blogapp.backend.payloads.UserRequest;
@@ -30,5 +32,9 @@ public interface UserServiceInterface {
 	public UserResponse deleteByEmail(String email);
 
 	public PaginationApiResponse findAllByPage(int page, int size, String sort, String direction);
+
+	public PaginationApiResponse searchUser(String keyword, int page, int size, String sort, String direction);
+
+	public PaginationApiResponse convertUserPageToPageApiResponse(Page<User> userPage);
 
 }

@@ -1,5 +1,6 @@
 package com.blogapp.backend.controller;
 
+import com.blogapp.backend.config.AppConfiguration;
 import com.blogapp.backend.exception.MethodArgumentsNotFound;
 import com.blogapp.backend.exception.ResourceNotFoundException;
 import com.blogapp.backend.model.User;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.el.MethodNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -113,11 +115,26 @@ public class UserController {
 
     @GetMapping("/get-all-by-page")
     public ResponseEntity<PaginationApiResponse> findAllByPage(
-            @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "0") int pageNo,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDirection", defaultValue = "ASC", required = false) String sortDirection) {
+            @RequestParam(defaultValue = AppConfiguration.DEFAULT_PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER) int pageNo,
+            @RequestParam(value = "sortBy", defaultValue = AppConfiguration.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = AppConfiguration.DEFAULT_SORT_DIRECTION, required = false) String sortDirection) {
         return ResponseEntity.ok(userService.findAllByPage(pageNo, pageSize, sortBy, sortDirection));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PaginationApiResponse> searchUser(
+            @RequestParam(value = "keyword", required = true) String keyword,
+            @RequestParam(defaultValue = AppConfiguration.DEFAULT_PAGE_SIZE) int pageSize,
+            @RequestParam(defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER) int pageNo,
+            @RequestParam(value = "sortBy", defaultValue = AppConfiguration.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = AppConfiguration.DEFAULT_SORT_DIRECTION, required = false) String sortDirection) {
+
+        if (keyword.isEmpty()) {
+            throw new MethodArgumentsNotFound("keyword", "search user", keyword);
+        }
+
+        return ResponseEntity.ok(userService.searchUser(keyword, pageNo, pageSize, sortBy, sortDirection));
     }
 
 }

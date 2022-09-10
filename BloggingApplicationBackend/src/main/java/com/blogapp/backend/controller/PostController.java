@@ -139,19 +139,19 @@ public class PostController {
         throw new MethodArgumentsNotFound("Page No ", "get Post by page", pageNo);
     }
 
-    @GetMapping("/get-by-catagory/{catagoryTitle}/page")
-    public ResponseEntity<PaginationApiResponse> getPostByCatagoryPagination(
-            @PathVariable String catagoryTitle,
+    @GetMapping("/get-by-category/{categoryTitle}/page")
+    public ResponseEntity<PaginationApiResponse> getPostByCategoryPagination(
+            @PathVariable String categoryTitle,
             @RequestParam(value = "pageNo", defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConfiguration.DEFAULT_PAGE_SIZE, required = false) Integer pageSize,
             @RequestParam(value = "sortBy", defaultValue = AppConfiguration.DEFAULT_SORT_BY, required = false) String sortBy,
             @RequestParam(value = "sortDirection", defaultValue = AppConfiguration.DEFAULT_SORT_DIRECTION, required = false) String sortDirection) {
-        LOGGER.info("Getting post by catagory and page");
-        if (!catagoryTitle.isEmpty()) {
+        LOGGER.info("Getting post by category and page");
+        if (!categoryTitle.isEmpty()) {
             return ResponseEntity.ok(
-                    postService.getPostsByCatagoryByPagination(catagoryTitle, pageNo, pageSize, sortBy, sortDirection));
+                    postService.getPostsByCatagoryByPagination(categoryTitle, pageNo, pageSize, sortBy, sortDirection));
         }
-        throw new MethodArgumentsNotFound("Catagory Title ", "get Post by catagory title", catagoryTitle);
+        throw new MethodArgumentsNotFound("Category Title ", "get Post by category title", categoryTitle);
     }
 
     @GetMapping("/get-by-authorEmail/{authorEmail}/page")

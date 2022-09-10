@@ -15,6 +15,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
         public void deleteByEmailIgnoreCase(String email);
 
-        @Query("SELECT u FROM USER u where u.name LIKE %?1% OR u.email LIKE %?1%")
+        @Query("SELECT u FROM User u where u.name LIKE %?1% OR u.email LIKE %?1%")
         public Page<User> searchUser(String keyword, Pageable pageable);
 }

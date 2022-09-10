@@ -79,7 +79,7 @@ public class CatagoryController {
             @RequestParam(value = "pageNo", defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "sortBy", defaultValue = AppConfiguration.DEFAULT_SORT_BY, required = false) String sortBy,
             @RequestParam(value = "sortDirection", defaultValue = AppConfiguration.DEFAULT_SORT_DIRECTION, required = false) String sortDirection) {
-        LOGGER.info("Getting all catagory by page");
+        LOGGER.info("Getting all category by page");
         return ResponseEntity.ok(this.catagoryService.getAllCatagoryByPage(pageNo, pageSize, sortBy, sortDirection));
     }
 

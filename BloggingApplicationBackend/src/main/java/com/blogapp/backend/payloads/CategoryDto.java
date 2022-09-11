@@ -3,7 +3,7 @@ package com.blogapp.backend.payloads;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-public class CatagoryDto {
+public class CategoryDto {
 
     private Integer id;
     @NotEmpty(message = "Title is required")

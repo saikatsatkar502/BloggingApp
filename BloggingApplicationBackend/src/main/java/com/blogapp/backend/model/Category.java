@@ -13,11 +13,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "catagory")
-public class Catagory {
+@Table(name = "category")
+public class Category {
 
     @Id
-    @Column(name = "catagory_id", nullable = false)
+    @Column(name = "category_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -26,7 +26,7 @@ public class Catagory {
 
     private String description;
 
-    @OneToMany(mappedBy = "catagory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Post> posts;
 
     public void setId(Integer id) {

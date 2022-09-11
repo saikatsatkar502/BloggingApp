@@ -70,13 +70,13 @@ public class PostController {
         throw new MethodArgumentsNotFound(POST_ID, "get Post by id", postId);
     }
 
-    @GetMapping("/get-by-catagory/{catagoryTitle}")
-    public ResponseEntity<List<PostResponse>> getPostByCatagory(@PathVariable String catagoryTitle) {
-        LOGGER.info("Getting post by catagory");
-        if (!catagoryTitle.isEmpty()) {
-            return ResponseEntity.ok(postService.getPostsByCatagory(catagoryTitle));
+    @GetMapping("/get-by-category/{categoryTitle}")
+    public ResponseEntity<List<PostResponse>> getPostByCategory(@PathVariable String categoryTitle) {
+        LOGGER.info("Getting post by category");
+        if (!categoryTitle.isEmpty()) {
+            return ResponseEntity.ok(postService.getPostsByCategory(categoryTitle));
         }
-        throw new MethodArgumentsNotFound("Catagory Title ", "get Post by catagory title", catagoryTitle);
+        throw new MethodArgumentsNotFound("Category Title ", "get Post by category title", categoryTitle);
     }
 
     @GetMapping("/get-by-author-email/{userEmail}")
@@ -149,7 +149,7 @@ public class PostController {
         LOGGER.info("Getting post by category and page");
         if (!categoryTitle.isEmpty()) {
             return ResponseEntity.ok(
-                    postService.getPostsByCatagoryByPagination(categoryTitle, pageNo, pageSize, sortBy, sortDirection));
+                    postService.getPostsByCategoryByPagination(categoryTitle, pageNo, pageSize, sortBy, sortDirection));
         }
         throw new MethodArgumentsNotFound("Category Title ", "get Post by category title", categoryTitle);
     }

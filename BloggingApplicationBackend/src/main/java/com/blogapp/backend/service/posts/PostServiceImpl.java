@@ -19,12 +19,12 @@ import com.blogapp.backend.exception.ResourceAlreadyExists;
 import com.blogapp.backend.exception.ResourceNotFoundException;
 import com.blogapp.backend.exception.UnauthorizedException;
 import com.blogapp.backend.model.Post;
-import com.blogapp.backend.payloads.CatagoryDto;
+import com.blogapp.backend.payloads.CategoryDto;
 import com.blogapp.backend.payloads.PaginationApiResponse;
 import com.blogapp.backend.payloads.PostRequest;
 import com.blogapp.backend.payloads.PostResponse;
 import com.blogapp.backend.repo.PostRepository;
-import com.blogapp.backend.service.catagory.CatagoryServiceImpl;
+import com.blogapp.backend.service.category.CategoryServiceImpl;
 import com.blogapp.backend.service.user.UserService;
 
 @Service
@@ -45,7 +45,7 @@ public class PostServiceImpl implements PostServiceInterface {
     private PostRepository postRepository;
 
     @Autowired
-    private CatagoryServiceImpl catagoryService;
+    private CategoryServiceImpl categoryService;
 
     @Autowired
     private UserService userService;
@@ -70,11 +70,11 @@ public class PostServiceImpl implements PostServiceInterface {
     }
 
     @Override
-    public List<PostResponse> getPostsByCatagory(String catagoryTitle) {
-        if (catagoryTitle != null) {
-            if (this.catagoryService.getCatagoryByTitle(catagoryTitle) != null) {
+    public List<PostResponse> getPostsByCategory(String categoryTitle) {
+        if (categoryTitle != null) {
+            if (this.categoryService.getCategoryByTitle(categoryTitle) != null) {
                 List<PostResponse> postResponses = new ArrayList<>();
-                List<Post> postList = this.postRepository.findAllByCatagoryTitleIgnoreCase(catagoryTitle);
+                List<Post> postList = this.postRepository.findAllByCategoryTitleIgnoreCase(categoryTitle);
                 if (!postList.isEmpty()) {
                     for (Post post : postList) {
                         PostResponse postResponse = this.convertPostToPostResponse(post);
@@ -84,13 +84,13 @@ public class PostServiceImpl implements PostServiceInterface {
                     return postResponses;
                 }
                 LOGGER.error(POST_NOT_FOUND);
-                throw new ResourceNotFoundException(POSTS, "catagory", catagoryTitle);
+                throw new ResourceNotFoundException(POSTS, "category", categoryTitle);
             }
-            LOGGER.error("Catagory not found");
-            throw new ResourceNotFoundException("Catagory", TITLE, catagoryTitle);
+            LOGGER.error("Category not found");
+            throw new ResourceNotFoundException("Category", TITLE, categoryTitle);
         }
-        LOGGER.error("Catagory title is null");
-        throw new MethodArgumentsNotFound("Catagory title not found");
+        LOGGER.error("Category title is null");
+        throw new MethodArgumentsNotFound("Category title not found");
     }
 
     @Override
@@ -172,7 +172,7 @@ public class PostServiceImpl implements PostServiceInterface {
                 oldPost.setTitle(post.getTitle());
                 oldPost.setContent(post.getContent());
                 oldPost.setImage(post.getImage());
-                oldPost.setCatagory(post.getCatagory());
+                oldPost.setCategory(post.getCategory());
                 oldPost.setCreatedAt(now);
                 LOGGER.info(POST_UPDATED, oldPost.getId());
                 return this.convertPostToPostResponse(this.postRepository.save(oldPost));
@@ -207,7 +207,7 @@ public class PostServiceImpl implements PostServiceInterface {
         postRes.setContent(post.getContent());
         postRes.setCreatedAt(post.getCreatedAt());
         postRes.setImage(post.getImage());
-        postRes.setCatagory(catagoryService.convertCatagoryToCatagaoryDto(post.getCatagory()));
+        postRes.setCategory(categoryService.convertCategoryToCatagaoryDto(post.getCategory()));
         postRes.setAuthor(userService.convertUserToUserResponse(post.getAuthor()));
         return postRes;
     }
@@ -216,11 +216,11 @@ public class PostServiceImpl implements PostServiceInterface {
     public Post convertPostRequestToPost(PostRequest postRequest) {
 
         Post post = new Post();
-        CatagoryDto catagoryDto = catagoryService.getCatagoryByTitle(postRequest.getCatagoryTitle());
+        CategoryDto categoryDto = categoryService.getCategoryByTitle(postRequest.getCategoryTitle());
         post.setTitle(postRequest.getTitle());
         post.setContent(postRequest.getContent());
         post.setImage(postRequest.getImage());
-        post.setCatagory(catagoryService.convertCatagoryDtoToCatagory(catagoryDto));
+        post.setCategory(categoryService.convertCategoryDtoToCategory(categoryDto));
         return post;
     }
 
@@ -245,10 +245,10 @@ public class PostServiceImpl implements PostServiceInterface {
     }
 
     @Override
-    public PaginationApiResponse getPostsByCatagoryByPagination(String catagoryTitle, int page, int size, String sortBy,
+    public PaginationApiResponse getPostsByCategoryByPagination(String categoryTitle, int page, int size, String sortBy,
             String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
-        Page<Post> postPage = this.postRepository.findAllByCatagoryTitleIgnoreCase(catagoryTitle, pageable);
+        Page<Post> postPage = this.postRepository.findAllByCategoryTitleIgnoreCase(categoryTitle, pageable);
         if (postPage.getContent().isEmpty()) {
             LOGGER.error(POST_NOT_FOUND);
             throw new ResourceNotFoundException("Post", "page", page);

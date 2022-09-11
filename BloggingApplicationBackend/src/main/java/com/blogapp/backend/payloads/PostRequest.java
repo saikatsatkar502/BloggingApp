@@ -8,7 +8,7 @@ public class PostRequest {
 
     private String image;
 
-    private String catagoryTitle;
+    private String categoryTitle;
 
     public void setTitle(String title) {
         this.title = title;
@@ -26,12 +26,12 @@ public class PostRequest {
         return content;
     }
 
-    public void setCatagoryTitle(String catagoryTitle) {
-        this.catagoryTitle = catagoryTitle;
+    public void setCategoryTitle(String categoryTitle) {
+        this.categoryTitle = categoryTitle;
     }
 
-    public String getCatagoryTitle() {
-        return catagoryTitle;
+    public String getCategoryTitle() {
+        return categoryTitle;
     }
 
     public void setImage(String image) {

@@ -13,7 +13,7 @@ public class PostResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
-    private CatagoryDto catagory;
+    private CategoryDto category;
 
     private String image;
 
@@ -51,12 +51,12 @@ public class PostResponse {
         return createdAt;
     }
 
-    public void setCatagory(CatagoryDto catagory) {
-        this.catagory = catagory;
+    public void setCategory(CategoryDto category) {
+        this.category = category;
     }
 
-    public CatagoryDto getCatagory() {
-        return catagory;
+    public CategoryDto getCategory() {
+        return category;
     }
 
     public void setAuthor(UserResponse author) {

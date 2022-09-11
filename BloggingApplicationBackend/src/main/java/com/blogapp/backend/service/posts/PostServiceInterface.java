@@ -18,7 +18,7 @@ public interface PostServiceInterface {
 
     public List<PostResponse> getAllPosts();
 
-    public List<PostResponse> getPostsByCatagory(String catagoryTitle);
+    public List<PostResponse> getPostsByCategory(String categoryTitle);
 
     public List<PostResponse> getPostsByAuthor(Integer id);
 
@@ -32,7 +32,7 @@ public interface PostServiceInterface {
 
     public PaginationApiResponse getAllPostsByPagination(int page, int size, String sort, String direction);
 
-    public PaginationApiResponse getPostsByCatagoryByPagination(String catagoryTitle, int page, int size, String sort,
+    public PaginationApiResponse getPostsByCategoryByPagination(String categoryTitle, int page, int size, String sort,
             String direction);
 
     public PaginationApiResponse getPostsByAuthorEmailByPagination(String authorEmail, int page, int size, String sort,

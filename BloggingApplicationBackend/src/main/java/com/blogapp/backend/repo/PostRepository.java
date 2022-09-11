@@ -12,7 +12,7 @@ import com.blogapp.backend.model.Post;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    List<Post> findAllByCatagoryTitleIgnoreCase(String catagoryTitle);
+    List<Post> findAllByCategoryTitleIgnoreCase(String categoryTitle);
 
     List<Post> findByAuthorId(Integer id);
 
@@ -22,13 +22,13 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     Boolean existsByTitleIgnoreCase(String title);
 
-    Page<Post> findAllByCatagoryTitleIgnoreCase(String catagoryTitle, Pageable pageable);
+    Page<Post> findAllByCategoryTitleIgnoreCase(String categoryTitle, Pageable pageable);
 
-    Page<Post> findAllByAuthorEmailIgnoreCase(String catagoryTitle, Pageable pageable);
+    Page<Post> findAllByAuthorEmailIgnoreCase(String categoryTitle, Pageable pageable);
 
     // search post by keyword
 
-    @Query("SELECT p FROM Post p WHERE p.title LIKE %?1% OR p.id LIKE %?1% OR p.catagory.title LIKE %?1% OR p.author.name LIKE %?1%")
+    @Query("SELECT p FROM Post p WHERE p.title LIKE %?1% OR p.id LIKE %?1% OR p.category.title LIKE %?1% OR p.author.name LIKE %?1%")
     Page<Post> searchPostByKeyword(String keyword, Pageable pageable);
 
 }

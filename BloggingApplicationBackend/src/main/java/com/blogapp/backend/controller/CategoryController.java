@@ -20,67 +20,67 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blogapp.backend.config.AppConfiguration;
 import com.blogapp.backend.exception.ResourceNotFoundException;
-import com.blogapp.backend.payloads.CatagoryDto;
+import com.blogapp.backend.payloads.CategoryDto;
 import com.blogapp.backend.payloads.PaginationApiResponse;
-import com.blogapp.backend.service.catagory.CatagoryServiceImpl;
+import com.blogapp.backend.service.category.CategoryServiceImpl;
 
 @RestController
-@RequestMapping("/catagory")
-public class CatagoryController {
+@RequestMapping("/category")
+public class CategoryController {
 
-    private static final Logger LOGGER = LogManager.getLogger(CatagoryController.class);
+    private static final Logger LOGGER = LogManager.getLogger(CategoryController.class);
 
     @Autowired
-    private CatagoryServiceImpl catagoryService;
+    private CategoryServiceImpl categoryService;
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<CatagoryDto>> getAllCatagory() {
-        LOGGER.info("Getting all catagory");
-        List<CatagoryDto> catagoryList = this.catagoryService.getAllCatagory();
-        if (!catagoryList.isEmpty()) {
-            return ResponseEntity.ok(catagoryList);
+    public ResponseEntity<List<CategoryDto>> getAllCategory() {
+        LOGGER.info("Getting all category");
+        List<CategoryDto> categoryList = this.categoryService.getAllCategory();
+        if (!categoryList.isEmpty()) {
+            return ResponseEntity.ok(categoryList);
         }
         throw new ResourceNotFoundException("No catagories found");
     }
 
     @GetMapping("/get-by-title/{title}")
-    public ResponseEntity<CatagoryDto> getCatagoryByTitle(@PathVariable String title) {
-        LOGGER.info("Getting catagory by title");
-        return ResponseEntity.ok(this.catagoryService.getCatagoryByTitle(title));
+    public ResponseEntity<CategoryDto> getCategoryByTitle(@PathVariable String title) {
+        LOGGER.info("Getting category by title");
+        return ResponseEntity.ok(this.categoryService.getCategoryByTitle(title));
     }
 
     @GetMapping("/get-by-id/{id}")
-    public ResponseEntity<CatagoryDto> getCatagoryById(@PathVariable int id) {
-        LOGGER.info("Getting catagory by id");
-        return ResponseEntity.ok(this.catagoryService.getCatagoryById(id));
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable int id) {
+        LOGGER.info("Getting category by id");
+        return ResponseEntity.ok(this.categoryService.getCategoryById(id));
     }
 
     @PostMapping("/save")
-    public ResponseEntity<CatagoryDto> saveCatagory(@Valid @RequestBody CatagoryDto catagory) {
-        LOGGER.info("Saving catagory");
-        return ResponseEntity.ok(this.catagoryService.saveCatagory(catagory));
+    public ResponseEntity<CategoryDto> saveCategory(@Valid @RequestBody CategoryDto category) {
+        LOGGER.info("Saving category");
+        return ResponseEntity.ok(this.categoryService.saveCategory(category));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<CatagoryDto> updateCatagory(@PathVariable int id, @Valid @RequestBody CatagoryDto catagory) {
-        LOGGER.info("Updating catagory");
-        return ResponseEntity.ok(this.catagoryService.updateCatagoryById(id, catagory));
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable int id, @Valid @RequestBody CategoryDto category) {
+        LOGGER.info("Updating category");
+        return ResponseEntity.ok(this.categoryService.updateCategoryById(id, category));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<CatagoryDto> deleteCatagory(@PathVariable int id) {
-        LOGGER.info("Deleting catagory");
-        return ResponseEntity.ok(this.catagoryService.deleteCatagoryById(id));
+    public ResponseEntity<CategoryDto> deleteCategory(@PathVariable int id) {
+        LOGGER.info("Deleting category");
+        return ResponseEntity.ok(this.categoryService.deleteCategoryById(id));
     }
 
     @GetMapping("/get-by-page")
-    public ResponseEntity<PaginationApiResponse> getAllCatagoryByPage(
+    public ResponseEntity<PaginationApiResponse> getAllCategoryByPage(
             @RequestParam(value = "pageSize", defaultValue = AppConfiguration.DEFAULT_PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "pageNo", defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "sortBy", defaultValue = AppConfiguration.DEFAULT_SORT_BY, required = false) String sortBy,
             @RequestParam(value = "sortDirection", defaultValue = AppConfiguration.DEFAULT_SORT_DIRECTION, required = false) String sortDirection) {
         LOGGER.info("Getting all category by page");
-        return ResponseEntity.ok(this.catagoryService.getAllCatagoryByPage(pageNo, pageSize, sortBy, sortDirection));
+        return ResponseEntity.ok(this.categoryService.getAllCategoryByPage(pageNo, pageSize, sortBy, sortDirection));
     }
 
 }

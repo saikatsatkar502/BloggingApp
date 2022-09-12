@@ -25,6 +25,10 @@ public class User {
 	@JsonBackReference
 	private Set<Post> posts;
 
+	@OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonBackReference
+	private Set<Comment> comments;
+
 	public User(int id, String email, String name, String password) {
 		super();
 		this.id = id;
@@ -75,6 +79,14 @@ public class User {
 
 	public void setPosts(Set<Post> posts) {
 		this.posts = posts;
+	}
+
+	public Set<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(Set<Comment> comments) {
+		this.comments = comments;
 	}
 
 }

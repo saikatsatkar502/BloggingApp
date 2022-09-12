@@ -42,6 +42,14 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UnableToUploadImageException.class)
+    public ResponseEntity<ApiResponse> unableToUploadImageException(
+            UnableToUploadImageException unableToUploadImageException) {
+        errorResponse.put(ERROR_KEY, unableToUploadImageException.getMessage());
+        ApiResponse apiResponse = new ApiResponse(errorResponse, false, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> methodArgumentNotValidException(
             MethodArgumentNotValidException methodArgumentNotValidException) {

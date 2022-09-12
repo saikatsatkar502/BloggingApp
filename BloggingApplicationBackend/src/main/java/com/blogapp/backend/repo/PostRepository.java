@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -30,5 +31,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT p FROM Post p WHERE p.title LIKE %?1% OR p.id LIKE %?1% OR p.category.title LIKE %?1% OR p.author.name LIKE %?1%")
     Page<Post> searchPostByKeyword(String keyword, Pageable pageable);
+    @Modifying
+    @Query("UPDATE Post p SET p.image = ?1 WHERE p.id = ?2")
+    Post updatePostImage( String image,Integer id);
 
 }

@@ -39,6 +39,8 @@ public class PostServiceImpl implements PostServiceInterface {
     private static final String POST_DELETED = "Post deleted with id : {}";
     private static final String POST_UPDATED = "Post updated with id : {}";
     private static final String POST_CREATED = "Post created with id : {}";
+
+    private static final String POST_ID = "Post Id is required";
     private static final String TITLE = "title";
 
     @Autowired
@@ -122,7 +124,7 @@ public class PostServiceImpl implements PostServiceInterface {
             LOGGER.info(POST_FOUND);
             return postResponse;
         }
-        LOGGER.error("Post id is null");
+        LOGGER.error(POST_ID);
         throw new MethodArgumentsNotFound("Post id not found");
     }
 
@@ -194,7 +196,7 @@ public class PostServiceImpl implements PostServiceInterface {
             LOGGER.info(POST_DELETED, post.getId());
             return this.convertPostToPostResponse(post);
         }
-        LOGGER.error("Post id is null");
+        LOGGER.error(POST_ID);
         throw new MethodArgumentsNotFound("Post id", "delete post", id);
     }
 
@@ -226,11 +228,6 @@ public class PostServiceImpl implements PostServiceInterface {
 
     // pagination
 
-    /**
-     * @param page
-     * @param size
-     * @return
-     */
     @Override
     public PaginationApiResponse getAllPostsByPagination(int page, int size, String sortBy, String direction) {
 
@@ -273,7 +270,7 @@ public class PostServiceImpl implements PostServiceInterface {
     public PaginationApiResponse convertPageToPageApiResponse(Page<Post> postPage) {
         if (postPage.getContent().isEmpty()) {
             LOGGER.error(POST_NOT_FOUND);
-            throw new MethodArgumentsNotFound(POSTS, "convert post response to pegination", postPage.getContent());
+            throw new MethodArgumentsNotFound(POSTS, "convert post response to pagination", postPage.getContent());
         }
         List<Object> postResponses = postPage.getContent().stream()
                 .map(this::convertPostToPostResponse)
@@ -302,6 +299,29 @@ public class PostServiceImpl implements PostServiceInterface {
             throw new ResourceNotFoundException(POSTS, "Search Keyword", keyword);
         }
         return this.convertPageToPageApiResponse(postPage);
+
+    }
+
+    @Override
+    public PostResponse updatePostImage(String image, Integer id) {
+        if (id != null) {
+            Post post = this.postRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+            post.setImage(image);
+            LOGGER.info(POST_UPDATED, post.getId());
+            return this.convertPostToPostResponse(this.postRepository.save(post));
+        }
+        LOGGER.error(POST_ID);
+        throw new MethodArgumentsNotFound("Post id", "update post image", id);
+    }
+
+    @Override
+    public Post findPostByAuthorEmailAndTitle(String email, String title) {
+        if(email != null && title != null) {
+            return this.postRepository.findByAuthorEmailIgnoreCaseAndTitleIgnoreCase(email, title);
+
+        }
+        throw new MethodArgumentsNotFound("email or title not found in findPostByAuthorEmailAndTitle method");
 
     }
 

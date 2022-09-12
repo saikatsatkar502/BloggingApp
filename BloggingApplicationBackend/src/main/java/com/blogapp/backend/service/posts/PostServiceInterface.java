@@ -43,4 +43,8 @@ public interface PostServiceInterface {
     public PaginationApiResponse searchPostByKeywordWithPagination(String keyword, int page, int size, String sort,
             String direction);
 
+    public PostResponse updatePostImage(String image, Integer id);
+
+    Post findPostByAuthorEmailAndTitle(String email, String title);
+
 }

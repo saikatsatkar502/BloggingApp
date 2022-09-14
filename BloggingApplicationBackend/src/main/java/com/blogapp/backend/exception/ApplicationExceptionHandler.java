@@ -5,6 +5,7 @@ import com.blogapp.backend.payloads.ApiResponse;
 import org.modelmapper.MappingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -50,6 +51,14 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiResponse> unauthorizedException(
+            UnauthorizedException unauthorizedException) {
+        errorResponse.put(ERROR_KEY, unauthorizedException.getMessage());
+        ApiResponse apiResponse = new ApiResponse(errorResponse, false, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> methodArgumentNotValidException(
             MethodArgumentNotValidException methodArgumentNotValidException) {
@@ -74,6 +83,13 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(MappingException.class)
     public ResponseEntity<ApiResponse> mappingException(MappingException mappingException) {
         errorResponse.put(ERROR_KEY, mappingException.getMessage());
+        ApiResponse apiResponse = new ApiResponse(errorResponse, false, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse> badCredentialsException(BadCredentialsException badCredentialsException) {
+        errorResponse.put(ERROR_KEY, badCredentialsException.getMessage());
         ApiResponse apiResponse = new ApiResponse(errorResponse, false, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }

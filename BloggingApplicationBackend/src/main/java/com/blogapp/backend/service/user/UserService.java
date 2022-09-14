@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.blogapp.backend.exception.MethodArgumentsNotFound;
@@ -39,6 +40,8 @@ public class UserService implements UserServiceInterface {
     @Autowired
     private ModelMapper modelMapper;
 
+     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
     public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -57,7 +60,9 @@ public class UserService implements UserServiceInterface {
     public UserResponse save(UserRequest userRequest) {
         if (userRequest != null) {
             if (this.userRepo.findByEmailIgnoreCase(userRequest.getEmail()) == null) {
-                User user = userRepo.save(this.convertUserRequestToUser(userRequest));
+                User user = this.convertUserRequestToUser(userRequest);
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+                user = userRepo.save(user);
                 LOGGER.info(USER_CREATED);
                 return this.convertUserToUserResponse(user);
             } else {
@@ -126,7 +131,7 @@ public class UserService implements UserServiceInterface {
                 user.setId(id);
                 user.setEmail(userReq.getEmail());
                 user.setName(userReq.getName());
-                user.setPassword(userReq.getPassword());
+                user.setPassword(passwordEncoder.encode(userReq.getPassword()));
                 userRepo.save(user);
                 LOGGER.info(USER_UPDATED);
                 return this.convertUserToUserResponse(user);

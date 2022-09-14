@@ -9,6 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class Post {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

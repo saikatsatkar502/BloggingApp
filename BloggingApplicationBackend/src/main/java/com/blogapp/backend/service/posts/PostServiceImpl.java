@@ -2,9 +2,13 @@ package com.blogapp.backend.service.posts;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.blogapp.backend.model.Comment;
+import com.blogapp.backend.payloads.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +23,6 @@ import com.blogapp.backend.exception.ResourceAlreadyExists;
 import com.blogapp.backend.exception.ResourceNotFoundException;
 import com.blogapp.backend.exception.UnauthorizedException;
 import com.blogapp.backend.model.Post;
-import com.blogapp.backend.payloads.CategoryDto;
-import com.blogapp.backend.payloads.PaginationApiResponse;
-import com.blogapp.backend.payloads.PostRequest;
-import com.blogapp.backend.payloads.PostResponse;
 import com.blogapp.backend.repo.PostRepository;
 import com.blogapp.backend.service.category.CategoryServiceImpl;
 import com.blogapp.backend.service.user.UserService;
@@ -52,7 +52,7 @@ public class PostServiceImpl implements PostServiceInterface {
     @Autowired
     private UserService userService;
 
-    private LocalDateTime now = LocalDateTime.now();
+    private final LocalDateTime now = LocalDateTime.now();
 
     @Override
     public List<PostResponse> getAllPosts() {
@@ -203,6 +203,15 @@ public class PostServiceImpl implements PostServiceInterface {
     @Override
     public PostResponse convertPostToPostResponse(Post post) {
 
+
+        Set<CommentPostResponse> commentPostResponseSet = new HashSet<>();
+        for (Comment comment : post.getComments()) {
+            CommentPostResponse commentPostResponse = new CommentPostResponse();
+            commentPostResponse.setContent(comment.getContent());
+            commentPostResponse.setCreatedAt(comment.getCreatedAt());
+            commentPostResponse.setId(comment.getId());
+            commentPostResponseSet.add(commentPostResponse);
+        }
         PostResponse postRes = new PostResponse();
         postRes.setId(post.getId());
         postRes.setTitle(post.getTitle());
@@ -211,8 +220,11 @@ public class PostServiceImpl implements PostServiceInterface {
         postRes.setImage(post.getImage());
         postRes.setCategory(categoryService.convertCategoryToCatagaoryDto(post.getCategory()));
         postRes.setAuthor(userService.convertUserToUserResponse(post.getAuthor()));
+        postRes.setComments(commentPostResponseSet);
         return postRes;
     }
+
+
 
     @Override
     public Post convertPostRequestToPost(PostRequest postRequest) {

@@ -1,6 +1,7 @@
 package com.blogapp.backend.payloads;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -18,6 +19,8 @@ public class PostResponse {
     private String image;
 
     private UserResponse author;
+
+    private Set<CommentPostResponse> comments;
 
     public void setId(Integer id) {
         this.id = id;
@@ -73,6 +76,14 @@ public class PostResponse {
 
     public String getImage() {
         return image;
+    }
+
+    public void setComments(Set<CommentPostResponse> comments) {
+        this.comments = comments;
+    }
+
+    public Set<CommentPostResponse> getComments() {
+        return comments;
     }
 
 }

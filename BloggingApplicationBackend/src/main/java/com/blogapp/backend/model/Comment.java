@@ -1,5 +1,7 @@
 package com.blogapp.backend.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 @Entity
@@ -14,7 +16,11 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime updatedAt;
 
     public void setId(Integer id) {
         this.id = id;
@@ -65,5 +71,12 @@ public class Comment {
         this.post = post;
         this.user = user;
         this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

@@ -28,6 +28,7 @@ public interface PostServiceInterface {
 
     public PostResponse convertPostToPostResponse(Post post);
 
+
     public Post convertPostRequestToPost(PostRequest postRequest);
 
     public PaginationApiResponse getAllPostsByPagination(int page, int size, String sort, String direction);

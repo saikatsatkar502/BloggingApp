@@ -1,9 +1,14 @@
 package com.blogapp.backend.service.user;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.blogapp.backend.exception.UnauthorizedException;
+import com.blogapp.backend.model.Role;
+import com.blogapp.backend.service.role.RoleServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -37,6 +42,8 @@ public class UserService implements UserServiceInterface {
     @Autowired
     private final UserRepository userRepo;
 
+    @Autowired private RoleServiceImpl roleService;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -60,8 +67,11 @@ public class UserService implements UserServiceInterface {
     public UserResponse save(UserRequest userRequest) {
         if (userRequest != null) {
             if (this.userRepo.findByEmailIgnoreCase(userRequest.getEmail()) == null) {
+                Set<Role> roles = new HashSet<>();
+                roles.add(roleService.findRoleByName(userRequest.getRole()));
                 User user = this.convertUserRequestToUser(userRequest);
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
+                user.setRoles(roles);
                 user = userRepo.save(user);
                 LOGGER.info(USER_CREATED);
                 return this.convertUserToUserResponse(user);
@@ -72,6 +82,26 @@ public class UserService implements UserServiceInterface {
             throw new MethodArgumentsNotFound("UserRequest is null");
         }
 
+    }
+
+    @Override
+    public UserResponse registerUser(UserRequest userRequest) {
+        if (userRequest != null) {
+            if (this.userRepo.findByEmailIgnoreCase(userRequest.getEmail()) == null) {
+                Set<Role> roles = new HashSet<>();
+                roles.add(roleService.findRoleByName("ROLE_USER"));
+                User user = this.convertUserRequestToUser(userRequest);
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+                user.setRoles(roles);
+                user = userRepo.save(user);
+                LOGGER.info(USER_CREATED);
+                return this.convertUserToUserResponse(user);
+            } else {
+                throw new ResourceAlreadyExists("User", EMAIL, userRequest.getEmail());
+            }
+        } else {
+            throw new MethodArgumentsNotFound("UserRequest is null");
+        }
     }
 
     @Override
@@ -97,7 +127,6 @@ public class UserService implements UserServiceInterface {
         if (id > 0) {
             User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("user", "id", id));
             LOGGER.info(USER_FOUND, user.getEmail());
-
             return user;
         } else {
             throw new MethodArgumentsNotFound("Id", "findById", id);
@@ -123,11 +152,13 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public UserResponse update(UserRequest userReq, int id) {
+    public UserResponse update(UserRequest userReq, int id, String reqUseremail) {
 
         if (userReq != null && id > 0) {
             User user = this.userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("user", "id", id));
-            if (user != null) {
+            if(!user.getEmail().equalsIgnoreCase(reqUseremail)){
+                throw new UnauthorizedException("You are not authorized to update this user");
+            }
                 user.setId(id);
                 user.setEmail(userReq.getEmail());
                 user.setName(userReq.getName());
@@ -135,9 +166,7 @@ public class UserService implements UserServiceInterface {
                 userRepo.save(user);
                 LOGGER.info(USER_UPDATED);
                 return this.convertUserToUserResponse(user);
-            } else {
-                throw new ResourceNotFoundException(USER_NOT_FOUND);
-            }
+
         } else {
             throw new MethodArgumentsNotFound("UserRequest or Id is null");
         }
@@ -156,7 +185,9 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public UserResponse convertUserToUserResponse(User user) {
-        return modelMapper.map(user, UserResponse.class);
+        UserResponse res = modelMapper.map(user, UserResponse.class);
+        res.setRoles(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+        return res;
 
     }
 
@@ -185,7 +216,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public PaginationApiResponse findAllByPage(int page, int size, String sortBy, String direction) {
-        Sort sort = null;
+        Sort sort;
         if (direction.equalsIgnoreCase("asc")) {
             sort = Sort.by(sortBy).ascending();
         } else if (direction.equalsIgnoreCase("desc")) {

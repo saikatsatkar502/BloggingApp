@@ -11,30 +11,32 @@ import com.blogapp.backend.payloads.UserResponse;
 
 public interface UserServiceInterface {
 
-	public List<UserResponse> findAll();
+	 List<UserResponse> findAll();
 
-	public UserResponse save(UserRequest userRequest);
+	 UserResponse save(UserRequest userRequest);
 
-	public User findByEmail(String email);
+	UserResponse registerUser(UserRequest userRequest);
 
-	public User findById(int id);
+	User findByEmail(String email);
 
-	public UserResponse delete(int id);
+	User findById(int id);
 
-	public UserResponse update(UserRequest userReq, int id);
+	UserResponse delete(int id);
 
-	public User convertUserRequestToUser(UserRequest userRequest);
+	UserResponse update(UserRequest userReq, int id, String requestUserEmail);
 
-	public UserRequest convertUserToUserRequest(User user);
+	User convertUserRequestToUser(UserRequest userRequest);
 
-	public UserResponse convertUserToUserResponse(User user);
+	UserRequest convertUserToUserRequest(User user);
 
-	public UserResponse deleteByEmail(String email);
+	UserResponse convertUserToUserResponse(User user);
 
-	public PaginationApiResponse findAllByPage(int page, int size, String sort, String direction);
+	UserResponse deleteByEmail(String email);
 
-	public PaginationApiResponse searchUser(String keyword, int page, int size, String sort, String direction);
+	PaginationApiResponse findAllByPage(int page, int size, String sort, String direction);
 
-	public PaginationApiResponse convertUserPageToPageApiResponse(Page<User> userPage);
+	PaginationApiResponse searchUser(String keyword, int page, int size, String sort, String direction);
+
+	PaginationApiResponse convertUserPageToPageApiResponse(Page<User> userPage);
 
 }

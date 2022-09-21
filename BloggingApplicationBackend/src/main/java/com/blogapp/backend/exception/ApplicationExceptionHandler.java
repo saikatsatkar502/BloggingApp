@@ -2,6 +2,7 @@ package com.blogapp.backend.exception;
 
 import com.blogapp.backend.payloads.ApiResponse;
 
+import io.jsonwebtoken.JwtException;
 import org.modelmapper.MappingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -93,6 +94,14 @@ public class ApplicationExceptionHandler {
         ApiResponse apiResponse = new ApiResponse(errorResponse, false, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ApiResponse> jwtException(JwtException exception){
+        errorResponse.put(ERROR_KEY,exception.getMessage());
+        ApiResponse apiResponse = new ApiResponse(errorResponse,false,HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(apiResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> exception(Exception exception) {

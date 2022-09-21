@@ -1,7 +1,5 @@
 package com.blogapp.backend.payloads;
 
-import com.blogapp.backend.model.Role;
-
 import javax.validation.constraints.*;
 
 public class UserRequest {
@@ -16,8 +14,8 @@ public class UserRequest {
     @NotEmpty(message = "Password is required")
     @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$", message = "Password must be at least 8 characters long, contain at least one digit, one uppercase letter, one lowercase letter and one special character")
     private String password;
-    @NotNull(message = "Role required")
-    private Role role;
+
+    private String role;
 
     public String getPassword() {
         return password;
@@ -43,11 +41,10 @@ public class UserRequest {
         this.name = name;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
-
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

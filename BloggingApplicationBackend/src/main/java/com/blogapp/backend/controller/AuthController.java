@@ -1,11 +1,16 @@
 package com.blogapp.backend.controller;
 
+import com.blogapp.backend.exception.MethodArgumentsNotFound;
 import com.blogapp.backend.payloads.JwtAuthReq;
 import com.blogapp.backend.payloads.JwtAuthResponse;
+import com.blogapp.backend.payloads.UserRequest;
+import com.blogapp.backend.payloads.UserResponse;
 import com.blogapp.backend.security.JwtTokenHelper;
+import com.blogapp.backend.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +30,9 @@ public class AuthController {
 
     @Autowired private AuthenticationManager authenticationManager;
 
+    @Autowired private UserService userService;
+
+    @PreAuthorize("permitAll()")
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> createToken(@RequestBody JwtAuthReq jwtAuthReq){
         this.authenticate(jwtAuthReq.getEmail(),jwtAuthReq.getPassword());
@@ -38,11 +46,6 @@ public class AuthController {
 
             return new ResponseEntity<>(response, HttpStatus.OK);
 
-
-
-
-
-
     }
 
     private void authenticate(String email, String password) {
@@ -50,4 +53,18 @@ public class AuthController {
             this.authenticationManager.authenticate(authenticationToken);
 
     }
+
+    @PreAuthorize("permitAll()")
+    @PostMapping("/register")
+    public ResponseEntity<UserResponse> register(@RequestBody UserRequest userRequest){
+        if(userRequest == null){
+            throw new MethodArgumentsNotFound("User Request is null");
+        }
+        UserResponse res = this.userService.registerUser(userRequest);
+            return new ResponseEntity<>(res,HttpStatus.CREATED);
+
+    }
+
+
+
 }

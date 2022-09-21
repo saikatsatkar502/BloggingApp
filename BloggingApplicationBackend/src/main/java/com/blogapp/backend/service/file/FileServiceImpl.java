@@ -10,23 +10,25 @@ import java.util.UUID;
 @Service
 public class FileServiceImpl implements FileServiceInterface{
 
-    /**
-     * @param path
-     * @param file
-     * @return
-     */
-    @Override
-    public String uploadImage(String path, MultipartFile file) throws IOException {
 
+    @Override
+    public String uploadImage(String path, MultipartFile file) throws IOException,NullPointerException {
+
+        if(file.isEmpty()){
+            throw new NullPointerException("file is empty");
+        }
         //File Name
         String name = file.getOriginalFilename();
 
         //random name
         String randomId = UUID.randomUUID().toString();
-        String FileName = randomId.concat(name.substring(name.lastIndexOf(".")));
+        if(name == null){
+           throw new NullPointerException("file name is null");
+        }
+        String fileName = randomId.concat(name.substring(name.lastIndexOf(".")));
 
         //Full path
-        String filePath = path+ File.separator+FileName;
+        String filePath = path+ File.separator+fileName;
 
         //create folder if not created
         File newFile = new File(path);
@@ -38,21 +40,16 @@ public class FileServiceImpl implements FileServiceInterface{
         //file copy
         Files.copy(file.getInputStream(), Paths.get(filePath));
 
-        return FileName;
+        return fileName;
     }
 
-    /**
-     * @param path
-     * @param fileName
-     * @return
-     */
+
     @Override
     public InputStream getResource(String path, String fileName) throws FileNotFoundException {
 
         String fullPath = path+File.separator+fileName;
 
-        InputStream inputStream = new FileInputStream(fullPath);
         //db logic to return input stream.
-        return inputStream;
+        return new FileInputStream(fullPath);
     }
 }

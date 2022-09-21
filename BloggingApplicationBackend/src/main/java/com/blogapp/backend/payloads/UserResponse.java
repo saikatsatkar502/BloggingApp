@@ -1,10 +1,14 @@
 package com.blogapp.backend.payloads;
 
 
+import java.util.List;
+
 public class UserResponse {
     private String email;
 
     private String name;
+
+    private List<String> roles;
 
     public String getEmail() {
         return email;
@@ -20,5 +24,13 @@ public class UserResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }

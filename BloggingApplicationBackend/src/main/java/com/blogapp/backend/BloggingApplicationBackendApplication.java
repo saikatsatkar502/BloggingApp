@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class BloggingApplicationBackendApplication implements CommandLineRunner 
 			User user = new User();
 			user.setName("Admin");
 			user.setEmail("Admin@Admin.com");
-			user.setPassword("Admin@123");
+			user.setPassword(new BCryptPasswordEncoder().encode("Admin@123"));
 			user.setRoles(Set.of(role));
 			this.userRepository.save(user);
 		}

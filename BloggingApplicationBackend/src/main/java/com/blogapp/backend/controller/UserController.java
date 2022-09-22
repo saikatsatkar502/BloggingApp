@@ -81,6 +81,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/save")
     public ResponseEntity<UserResponse> saveUser(@Valid @RequestBody UserRequest user) {
         if (user != null) {

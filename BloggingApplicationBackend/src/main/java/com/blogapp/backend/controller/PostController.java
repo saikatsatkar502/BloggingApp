@@ -2,10 +2,13 @@ package com.blogapp.backend.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.List;
 
 import com.blogapp.backend.exception.UnableToUploadImageException;
+import com.blogapp.backend.exception.UnauthorizedException;
 import com.blogapp.backend.model.Post;
+import com.blogapp.backend.security.JwtTokenHelper;
 import com.blogapp.backend.service.file.FileServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,15 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.blogapp.backend.config.AppConfiguration;
 import com.blogapp.backend.exception.MethodArgumentsNotFound;
@@ -48,7 +43,10 @@ public class PostController {
     private static final String USER_EMAIL = "email";
 
     @Value("${project.image}")
-    private String path ;
+    private String path;
+
+    @Autowired
+    private JwtTokenHelper jwtTokenHelper;
 
     @Autowired
     private PostServiceImpl postService;
@@ -67,9 +65,15 @@ public class PostController {
 
     @PostMapping("/create/{userEmail}")
     public ResponseEntity<PostResponse> createPost(@PathVariable String userEmail,
-            @RequestBody PostRequest postRequest) {
+                                                   @RequestBody PostRequest postRequest,
+                                                    @RequestHeader(value = "Authorization") String token) throws ResourceNotFoundException
+    {
         LOGGER.info("Creating post");
+
         if (!userEmail.isEmpty() && postRequest != null) {
+            if (!userEmail.equalsIgnoreCase(jwtTokenHelper.extractUsername(token.substring(7)))) {
+                throw new UnauthorizedException("You are not authorized to create post for this user :" + userEmail);
+            }
             if (this.userService.findByEmail(userEmail) != null) {
                 return ResponseEntity.ok(postService.createPost(postRequest, userEmail));
             }
@@ -124,9 +128,15 @@ public class PostController {
 
     @PutMapping("/update/{postId}/{userEmail}")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Integer postId, @PathVariable String userEmail,
-            @RequestBody PostRequest postRequest) {
+                                                   @RequestBody PostRequest postRequest,
+                                                   @RequestHeader(value = "Authorization") String token
+                                                   ) {
+
         LOGGER.info("Updating post");
         if (postId != null && postRequest != null) {
+            if(!userEmail.equalsIgnoreCase(jwtTokenHelper.extractUsername(token.substring(7)))){
+                throw new UnauthorizedException("You are not authorized to update post for this user :" + userEmail);
+            }
             if (this.userService.findByEmail(userEmail) != null) {
                 return ResponseEntity.ok(postService.updatePost(postRequest, postId, userEmail));
             }
@@ -203,25 +213,29 @@ public class PostController {
                 this.postService.searchPostByKeywordWithPagination(keyword, pageNo, pageSize, sortBy, sortDirection));
 
     }
+
     @PostMapping("/upload-image")
     public ResponseEntity<PostResponse> uploadImage(
-            @RequestParam(value = "image", required = true)MultipartFile imageFile,
-            @RequestParam(value = "postTitle",required = true) String postTitle,
-            @RequestParam(value = "authorEmail",required = true) String authorEmail
-            ) throws IOException {
-        if(imageFile.isEmpty() || postTitle.isEmpty() || authorEmail.isEmpty()) {
+            @RequestParam(value = "image", required = true) MultipartFile imageFile,
+            @RequestParam(value = "postTitle", required = true) String postTitle,
+            @RequestParam(value = "authorEmail", required = true) String authorEmail,
+            @RequestHeader(value = "Authorization") String token
+    ) throws IOException {
+        if (imageFile.isEmpty() || postTitle.isEmpty() || authorEmail.isEmpty()) {
             LOGGER.error("Image File, Post Title or Author Email Not Found");
             throw new MethodArgumentsNotFound("Image File, Post Title or Author Email", "upload image", imageFile);
         }
-        Post post = this.postService.findPostByAuthorEmailAndTitle( authorEmail,postTitle);
-        if(post!=null){
-            String fileName = this.fileService.uploadImage(path,imageFile);
-            PostResponse postResponse = this.postService.updatePostImage(fileName,post.getId());
-            if(postResponse != null){
+        if(!authorEmail.equalsIgnoreCase(jwtTokenHelper.extractUsername(token.substring(7)))){
+            throw new UnauthorizedException("You are not authorized to upload image for this user :" + authorEmail);
+        }
+        Post post = this.postService.findPostByAuthorEmailAndTitle(authorEmail, postTitle);
+        if (post != null) {
+            String fileName = this.fileService.uploadImage(path, imageFile);
+            PostResponse postResponse = this.postService.updatePostImage(fileName, post.getId());
+            if (postResponse != null) {
                 return new ResponseEntity<>(postResponse, HttpStatus.OK);
-            }
-            else{
-                throw  new UnableToUploadImageException(fileName,post.getTitle());
+            } else {
+                throw new UnableToUploadImageException(fileName, post.getTitle());
             }
 
         }
@@ -237,23 +251,22 @@ public class PostController {
             HttpServletResponse response
     ) throws IOException {
 
-            if(imageName.isEmpty() || postId ==0){
-                LOGGER.error("Image Name or Post Id Not Found");
-                throw new MethodArgumentsNotFound("Image Name or Post Id", "view image", imageName);
+        if (imageName.isEmpty() || postId == 0) {
+            LOGGER.error("Image Name or Post Id Not Found");
+            throw new MethodArgumentsNotFound("Image Name or Post Id", "view image", imageName);
+        }
+        PostResponse postResponse = this.postService.getPostById(postId);
+        if (postResponse != null) {
+            if (postResponse.getImage().equalsIgnoreCase(imageName)) {
+                InputStream resource = this.fileService.getResource(path, imageName);
+                response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+                StreamUtils.copy(resource, response.getOutputStream());
+            } else {
+                throw new ResourceNotFoundException("Post", "Image Name", imageName);
             }
-            PostResponse postResponse = this.postService.getPostById(postId);
-            if(postResponse!=null){
-                if(postResponse.getImage().equalsIgnoreCase(imageName)){
-                    InputStream resource = this.fileService.getResource(path, imageName);
-                    response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-                    StreamUtils.copy(resource, response.getOutputStream());
-                }else{
-                    throw new ResourceNotFoundException("Post", "Image Name", imageName);
-                }
-            }
-            else{
-                throw new ResourceNotFoundException("Post", "Post Id", postId);
-            }
+        } else {
+            throw new ResourceNotFoundException("Post", "Post Id", postId);
+        }
 
 
     }

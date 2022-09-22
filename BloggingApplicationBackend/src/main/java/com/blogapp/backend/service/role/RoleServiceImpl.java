@@ -41,4 +41,10 @@ public class RoleServiceImpl implements RoleInterface {
         return this.roleRepo.findByName(name);
     }
 
+    public void saveRole(Role role) {
+        if(role==null) {
+            throw new MethodArgumentsNotFound("Role", "saveRole", role);
+        }
+        this.roleRepo.save(role);
+    }
 }

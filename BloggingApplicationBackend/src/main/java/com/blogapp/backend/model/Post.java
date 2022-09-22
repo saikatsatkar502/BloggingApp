@@ -1,6 +1,8 @@
 package com.blogapp.backend.model;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -93,10 +95,15 @@ public class Post {
     }
 
     public Set<Comment> getComments() {
+        if(comments == null|| comments.isEmpty()) {
+            return Collections.emptySet();
+        }
         return comments;
     }
 
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
+
+
 }

@@ -44,6 +44,6 @@ public class SwaggerConfig {
     }
 
     private ApiInfo getInfo() {
-        return new ApiInfo("Blogging Application : Backend Info","This project is developed using Spring Boot V-2.5 .","1.0","Terms of service",new Contact("Soumik Sarkar (Associate Software Developer)","null","SaikatSarkar502@gmail.com"),"License ","null", Collections.emptyList());
+        return new ApiInfo("Blogging Application : Backend Info","This project is developed using Spring Boot V-2.7.3 .","0.0.5","Terms of service",new Contact("Soumik Sarkar (Associate Software Developer)","null","SaikatSarkar502@gmail.com"),"License ","null", Collections.emptyList());
     }
 }

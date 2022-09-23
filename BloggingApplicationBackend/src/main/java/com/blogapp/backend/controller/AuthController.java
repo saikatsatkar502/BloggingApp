@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -34,7 +36,7 @@ public class AuthController {
 
     @PreAuthorize("permitAll()")
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> createToken(@RequestBody JwtAuthReq jwtAuthReq){
+    public ResponseEntity<JwtAuthResponse> createToken(@Valid @RequestBody JwtAuthReq jwtAuthReq){
         this.authenticate(jwtAuthReq.getEmail(),jwtAuthReq.getPassword());
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(jwtAuthReq.getEmail());
 
@@ -56,7 +58,7 @@ public class AuthController {
 
     @PreAuthorize("permitAll()")
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@RequestBody UserRequest userRequest){
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRequest userRequest){
         if(userRequest == null){
             throw new MethodArgumentsNotFound("User Request is null");
         }

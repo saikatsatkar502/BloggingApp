@@ -3,7 +3,6 @@ package com.blogapp.backend.config;
 import com.blogapp.backend.security.CustomeUserDetailsService;
 import com.blogapp.backend.security.JWTauthenticationEntryPoint;
 import com.blogapp.backend.security.JwtAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

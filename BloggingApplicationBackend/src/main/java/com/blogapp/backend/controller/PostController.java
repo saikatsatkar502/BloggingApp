@@ -2,7 +2,6 @@ package com.blogapp.backend.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.Principal;
 import java.util.List;
 
 import com.blogapp.backend.exception.UnableToUploadImageException;
@@ -65,9 +64,8 @@ public class PostController {
 
     @PostMapping("/create/{userEmail}")
     public ResponseEntity<PostResponse> createPost(@PathVariable String userEmail,
-                                                   @RequestBody PostRequest postRequest,
-                                                    @RequestHeader(value = "Authorization") String token) throws ResourceNotFoundException
-    {
+            @RequestBody PostRequest postRequest,
+            @RequestHeader(value = "Authorization") String token) throws ResourceNotFoundException {
         LOGGER.info("Creating post");
 
         if (!userEmail.isEmpty() && postRequest != null) {
@@ -128,13 +126,12 @@ public class PostController {
 
     @PutMapping("/update/{postId}/{userEmail}")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Integer postId, @PathVariable String userEmail,
-                                                   @RequestBody PostRequest postRequest,
-                                                   @RequestHeader(value = "Authorization") String token
-                                                   ) {
+            @RequestBody PostRequest postRequest,
+            @RequestHeader(value = "Authorization") String token) {
 
         LOGGER.info("Updating post");
         if (postId != null && postRequest != null) {
-            if(!userEmail.equalsIgnoreCase(jwtTokenHelper.extractUsername(token.substring(7)))){
+            if (!userEmail.equalsIgnoreCase(jwtTokenHelper.extractUsername(token.substring(7)))) {
                 throw new UnauthorizedException("You are not authorized to update post for this user :" + userEmail);
             }
             if (this.userService.findByEmail(userEmail) != null) {
@@ -219,13 +216,12 @@ public class PostController {
             @RequestParam(value = "image", required = true) MultipartFile imageFile,
             @RequestParam(value = "postTitle", required = true) String postTitle,
             @RequestParam(value = "authorEmail", required = true) String authorEmail,
-            @RequestHeader(value = "Authorization") String token
-    ) throws IOException {
+            @RequestHeader(value = "Authorization") String token) throws IOException {
         if (imageFile.isEmpty() || postTitle.isEmpty() || authorEmail.isEmpty()) {
             LOGGER.error("Image File, Post Title or Author Email Not Found");
             throw new MethodArgumentsNotFound("Image File, Post Title or Author Email", "upload image", imageFile);
         }
-        if(!authorEmail.equalsIgnoreCase(jwtTokenHelper.extractUsername(token.substring(7)))){
+        if (!authorEmail.equalsIgnoreCase(jwtTokenHelper.extractUsername(token.substring(7)))) {
             throw new UnauthorizedException("You are not authorized to upload image for this user :" + authorEmail);
         }
         Post post = this.postService.findPostByAuthorEmailAndTitle(authorEmail, postTitle);
@@ -241,15 +237,13 @@ public class PostController {
         }
         throw new ResourceNotFoundException("Post", "Post Title", postTitle);
 
-
     }
 
     @GetMapping(value = "/view-image/{imageName}/", produces = MediaType.IMAGE_JPEG_VALUE)
     public void serveImage(
             @PathVariable String imageName,
             @PathParam(value = "postId") Integer postId,
-            HttpServletResponse response
-    ) throws IOException {
+            HttpServletResponse response) throws IOException {
 
         if (imageName.isEmpty() || postId == 0) {
             LOGGER.error("Image Name or Post Id Not Found");
@@ -267,7 +261,6 @@ public class PostController {
         } else {
             throw new ResourceNotFoundException("Post", "Post Id", postId);
         }
-
 
     }
 

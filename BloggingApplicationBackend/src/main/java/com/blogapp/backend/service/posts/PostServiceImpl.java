@@ -40,11 +40,14 @@ public class PostServiceImpl implements PostServiceInterface {
     private static final String POST_ID = "Post Id is required";
     private static final String TITLE = "title";
 
-    @Autowired private PostRepository postRepository;
+    @Autowired
+    private PostRepository postRepository;
 
-    @Autowired private CategoryServiceImpl categoryService;
+    @Autowired
+    private CategoryServiceImpl categoryService;
 
-    @Autowired private UserService userService;
+    @Autowired
+    private UserService userService;
 
     private final LocalDateTime now = LocalDateTime.now();
 
@@ -154,7 +157,6 @@ public class PostServiceImpl implements PostServiceInterface {
                 LOGGER.info(POST_CREATED, post.getId());
                 return this.convertPostToPostResponse(post);
 
-
             }
             LOGGER.error("Post already exists");
             throw new ResourceAlreadyExists("post", TITLE, postRequest.getTitle());
@@ -201,13 +203,13 @@ public class PostServiceImpl implements PostServiceInterface {
     @Override
     public PostResponse convertPostToPostResponse(Post post) {
 
-
         Set<CommentPostResponse> commentPostResponseSet = new HashSet<>();
 
         for (Comment comment : post.getComments()) {
             CommentPostResponse commentPostResponse = new CommentPostResponse();
             commentPostResponse.setContent(comment.getContent());
             commentPostResponse.setCreatedAt(comment.getCreatedAt());
+            commentPostResponse.setUpdateAt(comment.getUpdatedAt());
             commentPostResponse.setId(comment.getId());
             commentPostResponseSet.add(commentPostResponse);
         }
@@ -223,7 +225,6 @@ public class PostServiceImpl implements PostServiceInterface {
         postRes.setComments(commentPostResponseSet);
         return postRes;
     }
-
 
     @Override
     public Post convertPostRequestToPost(PostRequest postRequest) {
@@ -254,7 +255,7 @@ public class PostServiceImpl implements PostServiceInterface {
 
     @Override
     public PaginationApiResponse getPostsByCategoryByPagination(String categoryTitle, int page, int size, String sortBy,
-                                                                String direction) {
+            String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
         Page<Post> postPage = this.postRepository.findAllByCategoryTitleIgnoreCase(categoryTitle, pageable);
         if (postPage.getContent().isEmpty()) {
@@ -266,8 +267,8 @@ public class PostServiceImpl implements PostServiceInterface {
 
     @Override
     public PaginationApiResponse getPostsByAuthorEmailByPagination(String authorEmail, int page, int size,
-                                                                   String sortBy,
-                                                                   String direction) {
+            String sortBy,
+            String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
         Page<Post> postPage = this.postRepository.findAllByAuthorEmailIgnoreCase(authorEmail, pageable);
         if (postPage.getContent().isEmpty()) {
@@ -301,7 +302,7 @@ public class PostServiceImpl implements PostServiceInterface {
 
     @Override
     public PaginationApiResponse searchPostByKeywordWithPagination(String keyword, int page, int size, String sort,
-                                                                   String direction) {
+            String direction) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sort);
         Page<Post> postPage = this.postRepository.searchPostByKeyword(keyword, pageable);

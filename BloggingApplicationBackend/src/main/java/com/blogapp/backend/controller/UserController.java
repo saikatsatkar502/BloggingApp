@@ -36,6 +36,7 @@ public class UserController {
     @Autowired
     private JwtTokenHelper jwtTokenHelper;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/get-all")
     public ResponseEntity<List<UserResponse>> findAll() throws ResourceNotFoundException {
         List<UserResponse> users = userService.findAll();

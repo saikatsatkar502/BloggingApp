@@ -42,7 +42,7 @@ public class CategoryController {
         if (!categoryList.isEmpty()) {
             return ResponseEntity.ok(categoryList);
         }
-        throw new ResourceNotFoundException("No catagories found");
+        throw new ResourceNotFoundException("No categories found");
     }
 
     @GetMapping("/get-by-title/{title}")

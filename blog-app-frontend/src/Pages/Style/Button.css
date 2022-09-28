@@ -1,0 +1,10 @@
+.register {
+    color: #fff !important;
+
+}
+
+.register:active,
+.register:focus {
+    color: #000 !important;
+
+}

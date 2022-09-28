@@ -1,0 +1,10 @@
+.version {
+    padding-right: 0.5rem;
+    border-right: 2px solid #7e7878;
+}
+
+@media screen and (max-width: 600px) {
+    .version {
+        display: none;
+    }
+}

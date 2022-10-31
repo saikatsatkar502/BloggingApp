@@ -1,0 +1,15 @@
+.post-details .post-details__body .post-details__content {
+    width: 50% !important;
+}
+
+@media screen and (max-width: 500px) {
+
+    .post-details .post-details__body .post-details__content {
+        width: 100% !important;
+    }
+
+
+
+
+
+}

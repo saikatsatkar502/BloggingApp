@@ -1,5 +1,6 @@
 package com.blogapp.backend.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +58,7 @@ public class PostController {
     @Autowired
     private FileServiceImpl fileService;
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/get-all")
     public ResponseEntity<List<PostResponse>> getAllPosts() {
         LOGGER.info("Getting all posts");
@@ -152,6 +155,7 @@ public class PostController {
 
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("get-by-page")
     public ResponseEntity<PaginationApiResponse> getPostByPage(
             @RequestParam(value = "pageNo", defaultValue = AppConfiguration.DEFAULT_PAGE_NUMBER, required = false) Integer pageNo,
@@ -226,6 +230,7 @@ public class PostController {
         }
         Post post = this.postService.findPostByAuthorEmailAndTitle(authorEmail, postTitle);
         if (post != null) {
+
             String fileName = this.fileService.uploadImage(path, imageFile);
             PostResponse postResponse = this.postService.updatePostImage(fileName, post.getId());
             if (postResponse != null) {
@@ -239,6 +244,7 @@ public class PostController {
 
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping(value = "/view-image/{imageName}/", produces = MediaType.IMAGE_JPEG_VALUE)
     public void serveImage(
             @PathVariable String imageName,
@@ -252,6 +258,8 @@ public class PostController {
         PostResponse postResponse = this.postService.getPostById(postId);
         if (postResponse != null) {
             if (postResponse.getImage().equalsIgnoreCase(imageName)) {
+                path = path + File.separator ;
+                System.out.println(path);
                 InputStream resource = this.fileService.getResource(path, imageName);
                 response.setContentType(MediaType.IMAGE_JPEG_VALUE);
                 StreamUtils.copy(resource, response.getOutputStream());

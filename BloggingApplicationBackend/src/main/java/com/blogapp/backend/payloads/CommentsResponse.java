@@ -16,15 +16,15 @@ public class CommentsResponse {
 
     private String postTitle;
 
-    private UserResponse author;
+    private String authorName;
 
-    public CommentsResponse(Integer id, String content, LocalDateTime createdAt, Integer postId, String postTitle, UserResponse author) {
+    public CommentsResponse(Integer id, String content, LocalDateTime createdAt, Integer postId, String postTitle) {
         this.id = id;
         this.content = content;
         this.createdAt = createdAt;
         this.postId = postId;
         this.postTitle = postTitle;
-        this.author = author;
+
     }
 
     public CommentsResponse() {
@@ -70,12 +70,12 @@ public class CommentsResponse {
         this.postTitle = postTitle;
     }
 
-    public UserResponse getAuthor() {
-        return author;
+    public String getAuthor() {
+        return authorName;
     }
 
-    public void setAuthor(UserResponse author) {
-        this.author = author;
+    public void setAuthor(String authorName) {
+        this.authorName = authorName;
     }
 
     public LocalDateTime getUpdatedAt() {

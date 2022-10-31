@@ -258,7 +258,7 @@ public class CommentServiceImpl implements CommentServiceInterface{
             response.setPostId(comment.getPost().getId());
             response.setPostTitle(comment.getPost().getTitle());
             response.setUpdatedAt(comment.getUpdatedAt());
-            response.setAuthor(this.userService.convertUserToUserResponse(comment.getUser()));
+            response.setAuthor(comment.getUser().getName());
             return response;
         }
         throw  new MethodArgumentsNotFound("Comment is null");

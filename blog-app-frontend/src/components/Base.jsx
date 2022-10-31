@@ -1,4 +1,5 @@
 import React from 'react'
+import { Container } from 'reactstrap'
 import CustomeNavBar from './CustomeNavBar'
 import "./style/BaseStyle.css"
 
@@ -9,7 +10,10 @@ export default function Base({ title = "Blog-App", children }) {
                 <CustomeNavBar dark fixed="top" expand="md" color="dark" className="mb-5" container="md" />
             </div>
             <div className='main'>
-                {children}
+                <Container className='my-3'>
+                    {children}
+
+                </Container>
             </div>
             <div className='bg-opacity-75 footer '>
                 <h3>Footer</h3>

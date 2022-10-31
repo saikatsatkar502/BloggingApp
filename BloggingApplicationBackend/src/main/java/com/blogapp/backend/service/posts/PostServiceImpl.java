@@ -211,6 +211,7 @@ public class PostServiceImpl implements PostServiceInterface {
             commentPostResponse.setCreatedAt(comment.getCreatedAt());
             commentPostResponse.setUpdateAt(comment.getUpdatedAt());
             commentPostResponse.setId(comment.getId());
+            commentPostResponse.setAuthorName(comment.getUser().getName());
             commentPostResponseSet.add(commentPostResponse);
         }
 

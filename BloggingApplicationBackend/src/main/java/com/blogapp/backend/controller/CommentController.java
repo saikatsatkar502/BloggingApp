@@ -26,9 +26,9 @@ public class CommentController {
     public ResponseEntity<CommentsResponse> createComment(
             @RequestParam(value = "userEmail",required = true) String userEmail,
             @RequestParam(value = "postId" , required = true) Integer postId,
-            @RequestBody CommentRequest commentRequest
+            @RequestBody CommentRequest comment
             ){
-        return ResponseEntity.ok(this.commentService.createComment(commentRequest,userEmail,postId));
+        return ResponseEntity.ok(this.commentService.createComment(comment,userEmail,postId));
     }
 
     @GetMapping("/get-by-post-id")

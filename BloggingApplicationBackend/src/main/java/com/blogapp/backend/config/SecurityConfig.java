@@ -40,7 +40,12 @@ public class SecurityConfig {
             "/v2/api-docs",
             "/swagger-resources/**",
             "/swagger-ui/**",
-            "/webjars/**"
+            "/webjars/**",
+            "/post/get-by-page",
+            "/post/get-all",
+            "/post/view-image/**",
+            "/category/get-all",
+            "/comments/get-by-post-id"
     };
 
     @Bean

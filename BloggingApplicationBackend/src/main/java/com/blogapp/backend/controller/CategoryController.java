@@ -26,7 +26,6 @@ import com.blogapp.backend.payloads.PaginationApiResponse;
 import com.blogapp.backend.service.category.CategoryServiceImpl;
 
 @RestController
-@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/category")
 public class CategoryController {
 
@@ -35,6 +34,7 @@ public class CategoryController {
     @Autowired
     private CategoryServiceImpl categoryService;
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/get-all")
     public ResponseEntity<List<CategoryDto>> getAllCategory() {
         LOGGER.info("Getting all category");
@@ -56,19 +56,19 @@ public class CategoryController {
         LOGGER.info("Getting category by id");
         return ResponseEntity.ok(this.categoryService.getCategoryById(id));
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/save")
     public ResponseEntity<CategoryDto> saveCategory(@Valid @RequestBody CategoryDto category) {
         LOGGER.info("Saving category");
         return ResponseEntity.ok(this.categoryService.saveCategory(category));
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable int id, @Valid @RequestBody CategoryDto category) {
         LOGGER.info("Updating category");
         return ResponseEntity.ok(this.categoryService.updateCategoryById(id, category));
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<CategoryDto> deleteCategory(@PathVariable int id) {
         LOGGER.info("Deleting category");

@@ -12,6 +12,8 @@ import Dashboard from "./Pages/User-Page/Dashboard";
 import PrivateRoutes from "./Routes/PrivateRoutes";
 import UserProfile from "./Pages/User-Page/UserProfile";
 import UserPost from "./Pages/User-Page/UserPost";
+import NewsFeeds from "./Pages/NewsFeeds";
+
 
 function App() {
   return (
@@ -19,6 +21,7 @@ function App() {
       <ToastContainer position='top-center' autoClose={3000} />
       <Routes>
         <Route exact path="/" element={<Home />} />
+        <Route exact path="/news-feeds" element={<NewsFeeds />} />
         <Route exact path="/about" element={<About />} />
         <Route exact path="/signup" element={<Signup />} />
         <Route exact path="/login" element={<Login />} />

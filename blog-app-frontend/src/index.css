@@ -7,7 +7,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   /* // linear gradient */
-  background: linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%);
+  background: linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%, #FF8E53 90%) fixed no-repeat;
+  background-repeat: no-repeat;
+  background-size: auto;
+  background-position: center;
+
 }
 
 code {

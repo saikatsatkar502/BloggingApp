@@ -12,6 +12,15 @@ public class CommentPostResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateAt;
 
+    private String authorName;
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
     public void setId(int id) {
         this.id = id;
     }

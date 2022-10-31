@@ -2,10 +2,7 @@
 
 export const isLogin = () => {
     const data = sessionStorage.getItem("token");
-    if (data != null)
-        return true;
-    else
-        return false;
+    return (data != null) ? true : false;
 };
 
 //doLogin => data => set to sessionStorage
@@ -28,9 +25,21 @@ export const doLogout = (next) => {
 //get current user => get data from session storage
 
 export const getCurrentUser = () => {
-    const data = JSON.parse(sessionStorage.getItem("user" || null));
-    if (data != null) {
-        return data;
-    } else
+    if (isLogin()) {
+        return JSON.parse(sessionStorage.getItem("user" || null));
+    } else {
         return null;
+    }
+
 }
+
+//get current token => get data from session storage
+
+export const getCurrentToken = () => {
+    if (isLogin()) {
+        return JSON.parse(sessionStorage.getItem("token" || null));
+    } else {
+        return null;
+    }
+}
+

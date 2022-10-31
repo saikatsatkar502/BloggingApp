@@ -30,7 +30,6 @@ export default function CustomeNavBar(args) {
 
     const logout = () => {
         doLogout(() => {
-
             toast.success("Logout Successfull", {
                 position: "top-center",
                 autoClose: 3000,
@@ -54,29 +53,32 @@ export default function CustomeNavBar(args) {
     return (
         <div>
             <Navbar {...args}>
-                <NavbarBrand tag={ReactNavLink} to="/">reactstrap</NavbarBrand>
+                <NavbarBrand tag={ReactNavLink} to="/">Blog App</NavbarBrand>
                 <NavbarToggler onClick={toggle} />
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="me-auto" navbar>
                         <NavItem>
-                            <NavLink tag={ReactNavLink} to="/about">About</NavLink>
+                            <NavLink tag={ReactNavLink} to="/news-feeds">News Feeds</NavLink>
                         </NavItem>
+
+
+                    </Nav>
+                    <Nav navbar className='pe-2  '>
 
                         <UncontrolledDropdown right="end" nav inNavbar >
                             <DropdownToggle nav caret >
                                 more
                             </DropdownToggle>
                             <DropdownMenu end>
-                                <DropdownItem tag={ReactNavLink} to="/services">Services</DropdownItem>
+                                <DropdownItem tag={ReactNavLink} to="/about">About</DropdownItem>
                                 <DropdownItem tag={ReactNavLink} to="/contact">Contact Us</DropdownItem>
                                 <DropdownItem divider />
                                 <DropdownItem>Youtube</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </Nav>
-                    <NavbarText className='me-2 version'>Version : 1.0.0
+                    <NavbarText className='me-2 version'>Version : 1.5.0
                     </NavbarText>
-                    {/* horizontal line */}
                     <hr style={{
                         color: 'white',
                         backgroundColor: 'white',
@@ -84,9 +86,7 @@ export default function CustomeNavBar(args) {
                         borderColor: 'white'
 
                     }} />
-
-                    <Nav navbar className='pe2 '>
-
+                    <Nav navbar className='pe-2 '>
                         {
                             login && user !== undefined ? (
                                 <>
@@ -115,13 +115,8 @@ export default function CustomeNavBar(args) {
                                     </NavItem>
                                 </>
                             )
-
                         }
-
-
                     </Nav>
-
-
                 </Collapse>
             </Navbar>
         </div>
